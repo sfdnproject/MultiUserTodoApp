@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container  mt-5 vh-100">
+    <div class="row p-0  d-flex justify-content-evenly">
+        <div class="col-lg-3 shadow p-0">
+          <div class="col alert alert-secondary text-center">
+            <h2>Add Your Todo</h2>
+          </div>
+          <div class="col p-4 ">
+            <form action="/add_todo" method="post">
+              {% csrf_token %}
+              {{form.as_p}}
+              <hr>
+              <div class="col d-grid">
+                <input type="submit" value="ADD" class="btn btn-secondary">
+              </div>
+            </form>
+          </div>
+        </div>
+    
+        <div class="col-lg-8">
+            {% if todos|length == 0 %} <br> <br>
+            <div class="alert alert-secondary text-center mt-5">
+            <p class="display-5 my-auto">
+                No Todos Added Yet
+            </p>
+            </div>
+            {% else %}
+            <div>
+                <table class="table text-center border rounded-5 shadow">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Sr.No</th>
+                            <th>Title</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for todo in todos %}
+                        <tr>
+                            <td>{{forloop.counter}}</td>
+                            <td>{{todo.title}}</td>
+                            <td>{{todo.priority}}</td>
+                            <td>
+                                {% if todo.status == 'C' %}
+                                <i class="bi bi-check-square c-green" title="completed"></i>
+                                {% else %}
+                                <i class="bi bi-stopwatch p-warning" title="pending"></i>
+                                {% endif %}
+                            </td>
+                            <td>{{todo.date}}</td>
+                            <td>
+                                <a href="delete_todo/{{todo.id}}" class="btn btn-danger" title="Delete"><i class="bi bi-trash3"></i></a>
+                                {% if todo.status == 'P' %}
+                                <a href="change_status/{{todo.id}}/C" class="btn btn-success"><i class="bi bi-check-square" title="mark completed"></i></a>
+                                {% else %}
+                                <a href="change_status/{{todo.id}}/P" class="btn btn-warning"><i class="bi bi-stopwatch" title="mark pending"></i></a>
+                                {% endif %}
+                            </td>                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% endif %}
+            
+            
+        </div>  
+        
+    </div>
+</div>
+
+{% endblock %}
